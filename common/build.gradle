@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+def rootProps = new Properties()
+file('../gradle.properties').withInputStream { rootProps.load(it) }
+group = rootProps.maven_group
+version = rootProps.mod_version
+base { archivesName = 'terrainforged-engine' }
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+// Dependency-free test suite (no JUnit download needed): prints PASS/FAIL per check, exits non-zero on failure.
+tasks.register('engineTests', JavaExec) {
+    group = 'verification'
+    description = 'Determinism, hydrology, continuity, climate and settings tests for the terrain engine.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.freak4u.terrainforged.engine.EngineTests'
+    maxHeapSize = '3G'
+}
+tasks.named('check') { dependsOn 'engineTests' }
+tasks.named('test') { enabled = false } // no JUnit tests; see engineTests
+
+// Developer tool: gradlew :common:renderMap -Pseed=12345 -Pbpp=16
+tasks.register('renderMap', JavaExec) {
+    group = 'terrainforged'
+    description = 'Renders relief and climate PNGs of the default preset into build/maps.'
+    classpath = sourceSets.test.runtimeClasspath
+    mainClass = 'net.freak4u.terrainforged.engine.MapRender'
+    def mapsDir = layout.buildDirectory.dir('maps').get().asFile
+    doFirst { mapsDir.mkdirs() }
+    args = [project.findProperty('seed') ?: '12345', project.findProperty('x') ?: '0', project.findProperty('z') ?: '0',
+            project.findProperty('bpp') ?: '16', project.findProperty('size') ?: '1024', new File(mapsDir, 'terrain').path]
+}

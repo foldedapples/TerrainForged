@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "terrainforged",
+  "version": "${version}",
+  "name": "TerrainForged",
+  "description": "Realistic world generation: continents, mountain ranges, eroded valleys, winding rivers, lakes and climate-driven biomes, with an in-game Customize screen and presets. Made by Freak4U. Based on ReTerraForged and TerraForged (MIT).",
+  "authors": [
+    "Freak4U"
+  ],
+  "contributors": [
+    "TerraForged (dags) - original algorithms, MIT",
+    "ReTerraForged (raccoonman) - continuation, MIT"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.freak4u.terrainforged.fabric.TerrainForgedFabric"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "mixins": [
+    "terrainforged.mixins.json"
+  ],
+  "icon": "assets/terrainforged/icon.png"
+}

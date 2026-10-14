@@ -1,0 +1,46 @@
+plugins {
+    id 'fabric-loom' version "${loom_version}"
+}
+
+def rootProps = new Properties()
+file('../gradle.properties').withInputStream { rootProps.load(it) }
+version = "${rootProps.mod_version}+fabric-${minecraft_version}"
+group = rootProps.maven_group
+base { archivesName = 'terrainforged' }
+
+// The shared engine (pure Java) and the shared Minecraft integration (Mojang mappings) are compiled into this jar.
+sourceSets {
+    main {
+        java { srcDirs += ['../common/src/main/java', '../common-mc/src/main/java'] }
+        resources { srcDirs += ['../common-mc/src/main/resources'] }
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+}
+
+processResources {
+    def v = project.version
+    inputs.property 'version', v
+    filesMatching('fabric.mod.json') { expand 'version': v }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = 'UTF-8'
+    it.options.release = 21
+}
+
+java {
+    withSourcesJar()
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    from('../LICENSE') { rename { "${it}_terrainforged" } }
+    from('../THIRD_PARTY_NOTICES.md')
+}

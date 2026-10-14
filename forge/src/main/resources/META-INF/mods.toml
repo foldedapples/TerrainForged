@@ -1,0 +1,27 @@
+modLoader="javafml"
+loaderVersion="[61,)"
+license="MIT"
+
+[[mods]]
+modId="terrainforged"
+version="${mod_version}"
+displayName="TerrainForged"
+logoFile="terrainforged_logo.png"
+authors="Freak4U"
+credits="Based on algorithms from TerraForged (dags) and ReTerraForged (raccoonman), both MIT licensed."
+description='''Realistic world generation: continents, mountain ranges, eroded valleys, winding rivers, lakes and climate-driven biomes, with an in-game Customize screen and presets.
+Made by Freak4U. Based on ReTerraForged and TerraForged (MIT).'''
+
+[[dependencies.terrainforged]]
+    modId="forge"
+    mandatory=true
+    versionRange="[61.2,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.terrainforged]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.21.11,1.21.12)"
+    ordering="NONE"
+    side="BOTH"

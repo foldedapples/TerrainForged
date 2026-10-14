@@ -1,0 +1,6 @@
+// See settings.gradle. Convenience tasks below run the engine tests and render preview maps.
+tasks.register('engineTests') {
+    group = 'verification'
+    description = 'Runs the TerrainForged engine test suite (common module).'
+    dependsOn ':common:engineTests'
+}

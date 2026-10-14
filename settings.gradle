@@ -1,0 +1,5 @@
+// Root build: the loader-independent terrain engine (pure Java) and its test suite.
+// The loader builds are separate Gradle builds because Fabric Loom and ForgeGradle 7 should not share a
+// plugin classpath:   gradlew -p fabric build   /   gradlew -p forge build
+rootProject.name = 'TerrainForged'
+include 'common'

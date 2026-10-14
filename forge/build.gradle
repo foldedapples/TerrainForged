@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'net.minecraftforge.gradle' version '[7.0.3,8)'
+}
+
+def rootProps = new Properties()
+file('../gradle.properties').withInputStream { rootProps.load(it) }
+version = "${rootProps.mod_version}+forge-${minecraft_version}"
+group = rootProps.maven_group
+base { archivesName = 'terrainforged' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+// Shared engine + shared Minecraft integration are compiled into this jar (same sources as the Fabric build).
+sourceSets {
+    main {
+        java { srcDirs += ['../common/src/main/java', '../common-mc/src/main/java'] }
+        resources { srcDirs += ['../common-mc/src/main/resources'] }
+    }
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    runs {
+        configureEach {
+            workingDir = layout.projectDirectory.dir('run')
+        }
+        register('client')
+        register('server') { args '--nogui' }
+    }
+}
+
+repositories {
+    minecraft.mavenizer(it)
+    maven fg.forgeMaven
+    maven fg.minecraftLibsMaven
+    mavenCentral()
+}
+
+dependencies {
+    implementation minecraft.dependency("net.minecraftforge:forge:${minecraft_version}-${forge_version}")
+    annotationProcessor "net.minecraftforge:eventbus-validator:${eventbus_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+processResources {
+    def props = [mod_version: rootProps.mod_version, forge_version: forge_version, minecraft_version: minecraft_version]
+    inputs.properties props
+    filesMatching('META-INF/mods.toml') { expand props }
+}
+
+jar {
+    from('../LICENSE') { rename { "${it}_terrainforged" } }
+    from('../THIRD_PARTY_NOTICES.md')
+}
